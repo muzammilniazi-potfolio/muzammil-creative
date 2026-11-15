@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Muzammil Creatives – Staff Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f4;--c:#fff;--t:#0f1b2d;--m:#5b6b7f;--p:#0e7c86;--pt:#fff;--b:#d9e0e7;--ok:#15803d;--bad:#c62828;--w:#b45309;--in:#1d4ed8}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1320;--c:#142033;--t:#e7edf5;--m:#94a3b8;--p:#2bb3bf;--pt:#06222a;--b:#263650;--ok:#4ade80;--bad:#f87171;--w:#fbbf24;--in:#93c5fd}}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 Manrope,system-ui,sans-serif;background:var(--bg);color:var(--t)}
+header{display:flex;gap:12px;align-items:center;padding:12px 20px;background:var(--t);color:var(--bg)}header b{font-weight:800;font-size:17px}header span{margin-left:auto;opacity:.75}
+nav{display:flex;gap:6px;padding:12px 20px;overflow-x:auto;max-width:1100px;margin:auto}
+nav button{border:0;background:none;color:var(--m);font:600 14px Manrope,sans-serif;padding:8px 14px;border-radius:8px;cursor:pointer}nav .on{background:var(--c);color:var(--t);box-shadow:inset 0 -2px 0 var(--p)}
+main{max-width:1100px;margin:auto;padding:0 20px 40px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:10px;padding:18px;margin-bottom:16px}h3{margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.row{display:flex;gap:10px;flex-wrap:wrap}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--b);border-radius:8px;background:var(--bg);color:var(--t);font:inherit;margin:4px 0 12px}
+label{font-weight:600;font-size:13px;color:var(--m)}input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--p);outline-offset:1px}
+.btn{border:0;background:var(--p);color:var(--pt);font:700 15px Manrope,sans-serif;padding:11px 20px;border-radius:8px;cursor:pointer}.btn.alt{background:var(--t);color:var(--bg)}
+.btn:disabled{opacity:.35;cursor:not-allowed}.ghost{border:1px solid currentColor;background:none;color:inherit;font:600 13px Manrope,sans-serif;padding:7px 12px;border-radius:8px;cursor:pointer}
+.big{font-size:44px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-1px}.m{color:var(--m)}
+.rail{position:relative;height:10px;background:var(--b);border-radius:6px;margin:18px 0 6px}.rail i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:var(--p)}
+.rail u{position:absolute;left:22.2%;top:-4px;bottom:-4px;width:2px;background:var(--w)}.rl{display:flex;justify-content:space-between;font-size:12px;color:var(--m)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}.stats div{background:var(--bg);border-radius:8px;padding:10px}.stats b{display:block;font-size:26px}.stats span{color:var(--m);font-size:13px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--b);white-space:nowrap}th{color:var(--m);font-weight:600;font-size:13px}td.w{white-space:normal;min-width:160px}
+.chip{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid currentColor}.ok{color:var(--ok)}.bad{color:var(--bad)}.w{color:var(--w)}.in{color:var(--in)}
+.av{width:36px;height:36px;border-radius:50%;object-fit:cover;background:var(--p);color:var(--pt);display:inline-flex;align-items:center;justify-content:center;font-weight:800;vertical-align:middle;margin-right:8px}.av.l{width:96px;height:96px;font-size:36px;margin:0 0 12px}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}.login .card{width:100%;max-width:380px;padding:28px}.login h1{margin:0 0 4px;font-size:26px;font-weight:800}
+.warn{background:var(--bg);border-left:4px solid var(--w);padding:12px;border-radius:6px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,30px);background:var(--t);color:var(--bg);padding:11px 18px;border-radius:8px;opacity:0;pointer-events:none;transition:.25s}#toast.show{opacity:1;transform:translate(-50%,0)}#toast.bad{background:var(--bad);color:#fff}
+@media print{header,nav,.no{display:none}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<div id="app"></div><div id="toast"></div>
+<script>
+const API='https://script.google.com/macros/s/AKfycbwHfhUO39Ng08glwIT2TMXRpn-7d9_5A4JsqpgURwusej01QRpqoOf3XdSH40doPG2x/exec';
+let T=localStorage.getItem('mc_t'),ME,TM,OFF=0,PIC='',EM=[],RL=[];
+const $=s=>document.querySelector(s),V={};
+const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toast=(m,bad)=>{const t=$('#toast');t.textContent=m;t.className='show'+(bad?' bad':'');setTimeout(()=>t.className='',3000)};
+const api=async(a,d={})=>{const r=await fetch(API,{method:'POST',body:JSON.stringify({a,t:T,...d})}),j=await r.json();
+ if(j.error){if(j.error=='AUTH'){logout();throw Error('Session expired, please sign in again')}throw Error(j.error)}return j};
+const run=async f=>{try{return await f()}catch(e){toast(e.message=='Failed to fetch'?'Network problem, try again':e.message,1)}};
+const chip=s=>`<span class="chip ${{Present:'ok',Approved:'ok',In:'ok',Absent:'bad',Rejected:'bad',Leave:'in'}[s]||'w'}">${E(s)}</span>`;
+const tbl=(h,r)=>`<div class="tw"><table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${r.length?r.map(x=>`<tr>${x.map(y=>`<td>${y}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${h.length}" class="m">Nothing here yet</td></tr>`}</table></div>`;
+const av=(p,n,l)=>p?`<img class="av ${l?'l':''}" src="${E(p)}" alt="">`:`<span class="av ${l?'l':''}">${E((n||'?')[0])}</span>`;
+const f=(id,l,t='text',v='')=>`<div><label>${l}</label><input id="${id}" type="${t}" value="${E(v)}"></div>`;
+
+function loginV(){clearInterval(TM);$('#app').innerHTML=`<div class="login"><div class="card"><h1>Muzammil Creatives</h1><p class="m">Staff portal. Sign in with your office email.</p>
+<label>Email</label><input id="em" type="email" autocomplete="username"><label>Password</label><input id="pw" type="password" autocomplete="current-password" onkeydown="event.key=='Enter'&&login()">
+<button class="btn" style="width:100%" onclick="login()">Sign in</button></div></div>`}
+const login=()=>run(async()=>{const r=await api('login',{email:$('#em').value,pass:$('#pw').value});T=r.token;localStorage.setItem('mc_t',T);ME=r.me;go(ME.role=='HR'?'live':'d')});
+const logout=()=>{localStorage.removeItem('mc_t');T=null;ME=null;loginV()};
+const TABS={EMP:[['d','Dashboard'],['r','My requests'],['s','Payslip'],['p','Profile']],HR:[['live','Today live'],['rep','Reports'],['q','Requests'],['em','Employees']]};
+function go(k){clearInterval(TM);
+ $('#app').innerHTML=`<header><b>Muzammil Creatives</b><span>${E(ME.name)} (${ME.role=='HR'?'HR admin':'employee'})</span><button class="ghost" onclick="logout()">Log out</button></header>
+ <nav>${TABS[ME.role].map(([x,l])=>`<button class="${x==k?'on':''}" onclick="go('${x}')">${l}</button>`).join('')}</nav><main id="v"><p class="m">Loading…</p></main>`;
+ run(V[k]);if(k=='live')TM=setInterval(()=>run(V.live),30000)}
+const tick=()=>{const c=$('#clk');if(!c)return;const n=new Date(Date.now()+OFF),p=n.toLocaleTimeString('en-GB',{timeZone:'Asia/Karachi'});c.textContent=p;
+ const[h,m]=p.split(':'),x=Math.min(100,Math.max(0,((+h*60+ +m)-540)/540*100));$('#rail').style.width=x+'%'};
+
+/* ---------- employee ---------- */
+V.d=async()=>{const r=await api('me');ME=r.me;OFF=r.ms-Date.now();const a=r.att,mo=r.date.slice(0,7),c=s=>a.filter(x=>x.date.startsWith(mo)&&x.status==s).length;
+ $('#v').innerHTML=`<div class="grid"><div class="card"><div class="big" id="clk"></div><div class="m">${r.date}</div>
+ <div class="rail"><i id="rail"></i><u></u></div><div class="rl"><span>9 AM</span><span>11 AM last check-in</span><span>6 PM</span></div>
+ <p><b>${E(r.msg)}</b></p><div class="row"><button class="btn" ${r.canIn?'':'disabled'} onclick="act('in')">Check in</button><button class="btn alt" ${r.canOut?'':'disabled'} onclick="act('out')">Check out</button></div></div>
+ <div class="card"><h3>This month</h3><div class="stats">${[['Present',c('Present')],['Absent',c('Absent')],['Leave',c('Leave')],['Checkout missing',c('CheckOut Missing')]].map(([l,n])=>`<div><b>${n}</b><span>${l}</span></div>`).join('')}</div>
+ <p class="m">Missing a check-in or check-out? Send a request to HR from “My requests”.</p></div></div>
+ <div class="card"><h3>Recent attendance</h3>${tbl(['Date','In','Out','Status','Note'],a.map(x=>[x.date,x.cin||'–',x.cout||'–',chip(x.status),E(x.note)]))}</div>`;
+ tick();TM=setInterval(tick,1000)};
+const act=a=>run(async()=>{await api(a);toast(a=='in'?'Checked in':'Checked out');V.d()});
+V.r=async()=>{const r=await api('reqs'),d=new Date().toISOString().slice(0,10);
+ $('#v').innerHTML=`<div class="card"><h3>New request</h3><div class="grid"><div><label>Type</label><select id="rt">${['Leave','Short Leave','Late Sitting','CheckOut Missing','CheckIn Missing'].map(x=>`<option>${x}</option>`).join('')}</select></div>
+ ${f('rd','Date','date',d)}${f('rm','Time (optional)','time')}</div><label>Reason</label><textarea id="rr" rows="2"></textarea><button class="btn" onclick="sendReq()">Send to HR</button></div>
+ <div class="card"><h3>My requests</h3>${tbl(['Type','Date','Time','Reason','Status','Decided by'],r.list.map(x=>[E(x.type),x.date,x.time||'–',`<span style="white-space:normal">${E(x.reason)}</span>`,chip(x.status),E(x.by)||'–']))}</div>`};
+const sendReq=()=>run(async()=>{await api('req',{type:$('#rt').value,date:$('#rd').value,time:$('#rm').value,reason:$('#rr').value});toast('Request sent to HR');V.r()});
+V.s=()=>{const n=new Date(),ms=[];for(let i=1;i<=6;i++)ms.push(new Date(Date.UTC(n.getFullYear(),n.getMonth()-i,1)).toISOString().slice(0,7));
+ $('#v').innerHTML=`<div class="card"><h3>Payslip</h3><label>Month</label><select id="sm" onchange="slipV()">${ms.map(m=>`<option>${m}</option>`).join('')}</select><p class="m no">Payslips are issued on the 10th of the following month.</p></div><div class="card" id="sl"></div>`;slipV()};
+const slipV=()=>run(async()=>{const s=await api('slip',{m:$('#sm').value}),R=(l,v,c='')=>`<tr><td>${l}</td><td class="${c}"><b>${v}</b></td></tr>`;
+ $('#sl').innerHTML=s.state!='ok'?`<p class="warn">${E(s.msg)}</p>`:`<h3>Payslip for ${s.m}</h3><table>${R('Monthly salary','PKR '+s.salary.toLocaleString())}${R('Working days',s.workDays)}${R('Approved leave (paid)',s.leave)}
+ ${R('Absent days',s.absent+s.prejoin+(s.absentDates.length?' ('+s.absentDates.join(', ')+')':''),s.absent?'bad':'')}${R('Deduction','PKR '+s.deduction.toLocaleString(),s.deduction?'bad':'')}${R('Net pay','PKR '+s.net.toLocaleString(),'ok')}</table><p><button class="ghost no" onclick="print()">Print</button></p>`});
+V.p=()=>{const m=ME;$('#v').innerHTML=`<div class="card">${av(m.pic,m.name,1)}<h3>${E(m.name)}</h3><table>${[['Email',m.email],['Phone',m.phone],['Designation',m.designation],['Joined',m.joined]].map(([l,v])=>`<tr><td class="m">${l}</td><td>${E(v)}</td></tr>`).join('')}</table>
+ <p class="m">Profile details can only be changed by HR (Muzammil Ahmed, 03270062558).</p></div>`};
+
+/* ---------- HR ---------- */
+V.live=async()=>{const r=await api('live'),c=s=>r.list.filter(x=>x.status==s).length;
+ $('#v').innerHTML=`<div class="card"><h3>${r.date}, updates every 30 seconds</h3><div class="stats">${[['Present','Present'],['In','Checked in'],['Not yet','Not yet in'],['Absent','Absent'],['CheckOut Missing','Checkout missing'],['Leave','On leave']].map(([s,l])=>`<div><b>${c(s)}</b><span>${l}</span></div>`).join('')}</div></div>
+ <div class="card">${tbl(['Employee','Check in','Check out','Status'],r.list.map(x=>[av(x.pic,x.name)+E(x.name)+`<br><small class="m">${E(x.designation)}</small>`,x.cin||'–',x.cout||'–',chip(x.status)]))}</div>`};
+V.rep=async()=>{const e=await api('emps'),m=new Date().toISOString().slice(0,7);
+ $('#v').innerHTML=`<div class="card"><div class="grid">${f('f1','From','date',m+'-01')}${f('f2','To','date')}<div><label>Employee</label><select id="f3"><option value="">All employees</option>${e.list.map(x=>`<option value="${E(x.email)}">${E(x.name)}</option>`).join('')}</select></div></div>
+ <button class="btn" onclick="rep()">Show report</button> <button class="ghost" onclick="csv()">Download CSV</button></div><div id="rp"></div>`;rep()};
+const rep=()=>run(async()=>{const r=await api('rep',{from:$('#f1').value,to:$('#f2').value,email:$('#f3').value});RL=r.list;const g={};
+ r.list.forEach(x=>{const o=g[x.name]=g[x.name]||{};o[x.status]=(o[x.status]||0)+1});
+ $('#rp').innerHTML=`<div class="card"><h3>Summary</h3>${tbl(['Employee','Present','Absent','Leave','Checkout missing'],Object.keys(g).map(n=>[E(n),g[n].Present||0,g[n].Absent||0,g[n].Leave||0,g[n]['CheckOut Missing']||0]))}</div>
+ <div class="card"><h3>Daily details</h3>${tbl(['Date','Employee','In','Out','Status','Note'],r.list.map(x=>[x.date,E(x.name),x.cin||'–',x.cout||'–',chip(x.status),E(x.note)]))}</div>`});
+const csv=()=>{const q=s=>'"'+String(s).replace(/"/g,'""')+'"',t=[['Date','Employee','In','Out','Status','Note'],...RL.map(x=>[x.date,x.name,x.cin,x.cout,x.status,x.note])].map(r=>r.map(q).join(',')).join('\n'),a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='attendance.csv';a.click()};
+V.q=async()=>{const r=await api('reqs');$('#v').innerHTML=`<div class="card"><h3>Employee requests</h3>${tbl(['Employee','Type','Date','Time','Reason','Status','Action'],r.list.map(x=>[E(x.name),E(x.type),x.date,x.time||'–',`<span style="white-space:normal">${E(x.reason)}</span>`,chip(x.status)+(x.by?`<br><small class="m">${E(x.by)}</small>`:''),
+ x.status=='Pending'?`<button class="ghost ok" onclick="dec('${x.id}','Approved')">Approve</button> <button class="ghost bad" onclick="dec('${x.id}','Rejected')">Reject</button>`:'']))}<p class="m">Requests not decided within 5 working days are approved automatically.</p></div>`};
+const dec=(id,st)=>run(async()=>{await api('dec',{id,st});toast('Request '+st.toLowerCase());V.q()});
+V.em=async()=>{const r=await api('emps');EM=r.list;PIC='';
+ $('#v').innerHTML=`<div class="card"><h3 id="fh">Create employee ID</h3><div class="grid">${f('en','Full name')}${f('ee','Email (login ID)','email')}${f('ep','Phone')}${f('ed','Designation')}${f('es','Monthly salary (PKR)','number')}${f('ew','Password','text')}</div>
+ <label>Photo</label><input type="file" id="ef" accept="image/*" onchange="pic(this)"><label><input type="checkbox" id="ea" checked style="width:auto;margin-right:8px">Active (can sign in)</label><br><br>
+ <button class="btn" onclick="saveE()">Save employee</button> <button class="ghost" onclick="V.em()">Clear form</button></div>
+ <div class="card"><h3>Employees</h3>${tbl(['Employee','Email','Phone','Salary','Status',''],EM.map((x,i)=>[av(x.pic,x.name)+E(x.name)+`<br><small class="m">${E(x.designation)}</small>`,E(x.email),E(x.phone),x.salary,x.active=='1'?chip('Present').replace('Present','Active'):chip('Absent').replace('Absent','Inactive'),`<button class="ghost" onclick="editE(${i})">Edit</button>`]))}</div>`};
+const editE=i=>{const x=EM[i];$('#fh').textContent='Edit '+x.name;[['en',x.name],['ee',x.email],['ep',x.phone],['ed',x.designation],['es',x.salary],['ew','']].forEach(([k,v])=>$('#'+k).value=v);
+ $('#ee').readOnly=true;$('#ew').placeholder='Leave blank to keep current';$('#ea').checked=x.active=='1';PIC=x.pic;scrollTo({top:0,behavior:'smooth'})};
+const pic=i=>{const r=new FileReader();r.onload=()=>{const m=new Image();m.onload=()=>{const c=document.createElement('canvas');c.width=c.height=150;const s=Math.min(m.width,m.height);
+ c.getContext('2d').drawImage(m,(m.width-s)/2,(m.height-s)/2,s,s,0,0,150,150);PIC=c.toDataURL('image/jpeg',.7);toast('Photo ready, press Save')};m.src=r.result};r.readAsDataURL(i.files[0])};
+const saveE=()=>run(async()=>{await api('save',{e:{name:$('#en').value,email:$('#ee').value,phone:$('#ep').value,designation:$('#ed').value,salary:$('#es').value,pass:$('#ew').value,pic:PIC,active:$('#ea').checked?'1':'0'}});toast('Employee saved');V.em()});
+
+T?run(async()=>{const r=await api('me');ME=r.me;go(ME.role=='HR'?'live':'d')}).then(()=>ME||loginV()):loginV();
+</script></body></html>
