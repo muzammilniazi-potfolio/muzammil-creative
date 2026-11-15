@@ -31,11 +31,12 @@ label{font-weight:600;font-size:13px;color:var(--m)}input:focus,select:focus,tex
 <div id="app"></div><div id="toast"></div>
 <script>
 const API='https://script.google.com/macros/s/AKfycbwHfhUO39Ng08glwIT2TMXRpn-7d9_5A4JsqpgURwusej01QRpqoOf3XdSH40doPG2x/exec';
-let T=localStorage.getItem('mc_t'),ME,TM,OFF=0,PIC='',EM=[],RL=[];
+let T=localStorage.getItem('mc_t')=='undefined'?null:localStorage.getItem('mc_t'),ME,TM,OFF=0,PIC='',EM=[],RL=[];
 const $=s=>document.querySelector(s),V={};
 const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const toast=(m,bad)=>{const t=$('#toast');t.textContent=m;t.className='show'+(bad?' bad':'');setTimeout(()=>t.className='',3000)};
 const api=async(a,d={})=>{const r=await fetch(API,{method:'POST',body:JSON.stringify({a,t:T,...d})}),j=await r.json();
+ if(!j.error&&(a=='login'||a=='me')&&!j.me)throw Error('Backend replied: '+JSON.stringify(j).slice(0,160));
  if(j.error){if(j.error=='AUTH'){logout();throw Error('Session expired, please sign in again')}throw Error(j.error)}return j};
 const run=async f=>{try{return await f()}catch(e){toast(e.message=='Failed to fetch'?'Network problem, try again':e.message,1)}};
 const chip=s=>`<span class="chip ${{Present:'ok',Approved:'ok',In:'ok',Absent:'bad',Rejected:'bad',Leave:'in'}[s]||'w'}">${E(s)}</span>`;
