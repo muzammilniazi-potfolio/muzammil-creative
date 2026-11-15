@@ -46,7 +46,7 @@ const f=(id,l,t='text',v='')=>`<div><label>${l}</label><input id="${id}" type="$
 function loginV(){clearInterval(TM);$('#app').innerHTML=`<div class="login"><div class="card"><h1>Muzammil Creatives</h1><p class="m">Staff portal. Sign in with your office email.</p>
 <label>Email</label><input id="em" type="email" autocomplete="username"><label>Password</label><input id="pw" type="password" autocomplete="current-password" onkeydown="event.key=='Enter'&&login()">
 <button class="btn" style="width:100%" onclick="login()">Sign in</button></div></div>`}
-const login=()=>run(async()=>{const r=await api('login',{email:$('#em').value,pass:$('#pw').value});T=r.token;localStorage.setItem('mc_t',T);ME=r.me;go(ME.role=='HR'?'live':'d')});
+const login=()=>run(async()=>{const r=await api('login',{email:$('#em').value,pass:$('#pw').value});if(!r.me)throw Error('Backend is old: paste the new Code.gs, run setup, then deploy a New version');T=r.token;localStorage.setItem('mc_t',T);ME=r.me;go(ME.role=='HR'?'live':'d')});
 const logout=()=>{localStorage.removeItem('mc_t');T=null;ME=null;loginV()};
 const TABS={EMP:[['d','Dashboard'],['r','My requests'],['s','Payslip'],['p','Profile']],HR:[['live','Today live'],['rep','Reports'],['q','Requests'],['em','Employees']]};
 function go(k){clearInterval(TM);
